@@ -49,48 +49,48 @@ const userSchema = new mongoose.Schema({
 const Video = mongoose.model("Video", netflixSchema);
 const User = mongoose.model("User", userSchema);
 
-Video.insertMany([
-    {
-        id: 1,
-        videoName: "WWII in Color",
-        rating: 9,
-        description: "From the attack on Pearl Harbor to D-Day, the most pivotal events of World War II come to life in this vivid docuseries featuring colorized footage.",
-        videoLink: "https://www.youtube.com/",
-        genre: "Educational"
-    },
-    {
-        id: 2,
-        videoName: "Inception",
-        rating: 8,
-        description: "A troubled thief who extracts secrets from people's dreams takes one last job: leading a dangerous mission to plant an idea in a target's subconscious.",
-        videoLink: "https://www.youtube.com/",
-        genre: "Drama"
-    },
-    {
-        id: 3,
-        videoName: "Our Planet",
-        rating: 9.2,
-        description: "Experience our planet's natural beauty and examine how climate change impacts all living creatures in this ambitious documentary of spectacular scope.",
-        videoLink: "https://www.youtube.com/",
-        genre: "Educational"
-    },
-]).then(function () {
-    console.log("Data inserted")
-}).catch(function (error) {
-    console.log(error)
-});
+// Video.insertMany([
+//     {
+//         id: 1,
+//         videoName: "WWII in Color",
+//         rating: 9,
+//         description: "From the attack on Pearl Harbor to D-Day, the most pivotal events of World War II come to life in this vivid docuseries featuring colorized footage.",
+//         videoLink: "https://www.youtube.com/",
+//         genre: "Educational"
+//     },
+//     {
+//         id: 2,
+//         videoName: "Inception",
+//         rating: 8,
+//         description: "A troubled thief who extracts secrets from people's dreams takes one last job: leading a dangerous mission to plant an idea in a target's subconscious.",
+//         videoLink: "https://www.youtube.com/",
+//         genre: "Drama"
+//     },
+//     {
+//         id: 3,
+//         videoName: "Our Planet",
+//         rating: 9.2,
+//         description: "Experience our planet's natural beauty and examine how climate change impacts all living creatures in this ambitious documentary of spectacular scope.",
+//         videoLink: "https://www.youtube.com/",
+//         genre: "Educational"
+//     },
+// ]).then(function () {
+//     console.log("Data inserted")
+// }).catch(function (error) {
+//     console.log(error)
+// });
 
-/**
- * Endpoint to return the list of all the videos.
- */
-app.get("/videos", (req, res) => {
-    Video.find({} , (err, foundVideos)=>{
-        if(err){res.send(err);}
-        else{
-          res.send(foundVideos);
-        }
-      })
-})
+// /**
+//  * Endpoint to return the list of all the videos.
+//  */
+// app.get("/videos", (req, res) => {
+//     Video.find({} , (err, foundVideos)=>{
+//         if(err){res.send(err);}
+//         else{
+//           res.send(foundVideos);
+//         }
+//       })
+// })
 
 /**
  * Endpoint to return information about the video with id:{id}
