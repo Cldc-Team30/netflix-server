@@ -83,14 +83,14 @@ const User = mongoose.model("User", userSchema);
 // /**
 //  * Endpoint to return the list of all the videos.
 //  */
-// app.get("/videos", (req, res) => {
-//     Video.find({} , (err, foundVideos)=>{
-//         if(err){res.send(err);}
-//         else{
-//           res.send(foundVideos);
-//         }
-//       })
-// })
+app.get("/videos", (req, res) => {
+    Video.find({} , (err, foundVideos)=>{
+        if(err){res.send(err);}
+        else{
+          res.send(foundVideos);
+        }
+      })
+})
 
 /**
  * Endpoint to return information about the video with id:{id}
