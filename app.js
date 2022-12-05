@@ -14,7 +14,7 @@ const jwtAuthz = require('express-jwt-authz');
 const jwksRsa = require('jwks-rsa');
 const cors = require('cors');
 const corsOptions ={
-    origin:'http://localhost:3000', 
+    origin:'https://netflick.azurewebsites.net', 
     credentials:true,            //access-control-allow-credentials:true
     optionSuccessStatus:200
 }
