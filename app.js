@@ -228,6 +228,11 @@ app.get('/video/:id', (req, res) => {
   }
 });
 
-app.listen(8000,()=>{
-    console.log("Server started on port 8000");
+app.listen(process.env.PORT || 8000,()=>{
+    if(process.env.PORT!=null){
+      console.log("Server started on port "+ process.env.PORT);
+    }
+    else{
+      console.log("Server started on port 8000");
+    }
 })
