@@ -47,13 +47,24 @@ jobs:
         npm install --legacy-peer-deps
         npm run build --if-present
         
+     # ZIP
+    - name: Zip Release
+  # You may pin to the exact commit or the version.
+  # uses: TheDoctor0/zip-release@09336613be18a8208dfa66bd57efafd9e2685657
+      uses: TheDoctor0/zip-release@0.6.2
+      with:
+        # Filename for archive
+        filename: release.zip
+        # Base path for archive files
+        path: .
+        
    
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v3
       with:
         name: node-app
-        path: .
+        path: release.zip
 
   deploy:
     permissions:
@@ -80,5 +91,5 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_bb45f2f1f81942d08c55a8da15db593c }}
+        package: release.zip
