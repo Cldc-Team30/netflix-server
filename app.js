@@ -4,7 +4,10 @@ const mongoose = require('mongoose');
 const express = require('express');
 const url = 'mongodb+srv://admin-nandika:test123@netflix-cluster.j0wiwja.mongodb.net/netflixDB';
 // const url = 'mongodb://localhost:27017/netflixCldcDB'
+const bodyParser = require("body-parser");
 const app = express();
+
+app.use(bodyParser.json())
 mongoose.connect(url);
 
 const netflixSchema = new mongoose.Schema({
@@ -135,22 +138,22 @@ app.get("/videos/:id", (req, res) => {
 /**
  * Endpoint to return payment information corresponding to the user.
  */
-app.get("/payment", (req, res) => {
-    let userId = req.body.userId;
-    User.findOne({ id: userId }, (err, foundUser) => {
-        if (err) {
-            res.status(403).send(err);
-        }
-        else {
-            if (foundUser) {
-                res.status(200).send(500 + 800 * foundUser.minsDramaStreamed - 200 * foundUser.minsEduStreamed)
-            }
-            else {
-                res.sendStatus(403);
-            }
-        }
-    });
-})
+// app.get("/payment", (req, res) => {
+//     let userId = req.body.userId;
+//     User.findOne({ userId: userId }, (err, foundUser) => {
+//         if (err) {
+//             res.send(err);
+//         }
+//         else {
+//             if (foundUser) {
+//                 res.send(500 + 800 * foundUser.minsDramaStreamed - 200 * foundUser.minsEduStreamed)
+//             }
+//             else {
+//                 res.sendStatus(403);
+//             }
+//         }
+//     });
+// })
 
 /**
  * Endpoint to update the mins of educational content streamed.
@@ -170,10 +173,10 @@ app.patch("/updateMinsDramaStreamed", (req, res) => {
  * Endpoint to verify if the user exists, if not, adding the new user in the database.
  */
 app.post("/verify", (req, res) => {
-    console.log(req)
+    console.log(req.body)
     let userId = req.body.userId;
     let userEmail = req.body.userEmail;
-    User.findOne({ id: userId }, (err, foundUser) => {
+    User.findOne({ userId: userId }, (err, foundUser) => {
         if (err) {
             res.status(403).send(err);
         }
