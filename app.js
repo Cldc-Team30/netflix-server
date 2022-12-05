@@ -6,6 +6,30 @@ const url = 'mongodb+srv://admin-nandika:test123@netflix-cluster.j0wiwja.mongodb
 // const url = 'mongodb://localhost:27017/netflixCldcDB'
 const app = express();
 mongoose.connect(url);
+const { expressjwt: jwt  } = require('express-jwt');
+const jwtAuthz = require('express-jwt-authz');
+const jwksRsa = require('jwks-rsa');
+const cors = require('cors');
+const corsOptions ={
+    origin:'http://localhost:3000', 
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200
+}
+app.use(cors(corsOptions));
+
+const checkJwt = jwt({
+  secret: jwksRsa.expressJwtSecret({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 5,
+    jwksUri: `https://dev-w7kjs2xm5elgzkn0.us.auth0.com/.well-known/jwks.json`
+  }),
+
+  audience: 'https://dev-w7kjs2xm5elgzkn0.us.auth0.com/api/v2/',
+  issuer: [`https://dev-w7kjs2xm5elgzkn0.us.auth0.com/`],
+  algorithms: ['RS256']
+});
+//...
 
 const netflixSchema = new mongoose.Schema({
     id: {
@@ -103,7 +127,8 @@ const User = mongoose.model("User", userSchema);
 /**
  * Endpoint to return the list of all the videos.
  */
-app.get("/videos", (req, res) => {
+app.get("/videos", checkJwt, (req, res) => {
+    console.log(req.auth.sub) // This is the user id of the user who is signed in on the UI and making this request.
     Video.find({}, (err, foundVideos) => {
         if (err) { res.send(err); }
         else {
