@@ -101,39 +101,39 @@ const User = mongoose.model("User", userSchema);
 
 // User.create({userId:1, userEmail: "test@gmail.com", minsEduStreamed:12, minsDramaStreamed:10})
 
-Video.insertMany([
-    {
-        id: 1,
-        videoName: "WWII in Color",
-        rating: 9,
-        description: "From the attack on Pearl Harbor to D-Day, the most pivotal events of World War II come to life in this vivid docuseries featuring colorized footage.",
-        videoLink: "https://www.youtube.com/",
-        videoImg: "https://occ-0-2086-2186.1.nflxso.net/dnm/api/v6/6gmvu2hxdfnQ55LZZjyzYR4kzGk/AAAABazfdM_pvsEcT_uNGB6Nw5ibtzDZ3LL6WO4ke8XGIIb2R5xqQaoPXgr8JnJbcUE1XmxQa0VMGYVYil6sliAXmBhJ3EArljuBZ6024GNmFn6DFCa2dltIqtKp_PlErLO75Lbv.jpg?r=aee",
-        genre: "Educational"
-    },
-    {
-        id: 2,
-        videoName: "Inception",
-        rating: 8,
-        description: "A troubled thief who extracts secrets from people's dreams takes one last job: leading a dangerous mission to plant an idea in a target's subconscious.",
-        videoLink: "https://www.youtube.com/",
-        videoImg: 'https://occ-0-2086-2186.1.nflxso.net/dnm/api/v6/6gmvu2hxdfnQ55LZZjyzYR4kzGk/AAAABWhw56NkHgWP2gKN0y5pR-Q0LBcgcfPK1VQPqeuahqiZLe6ZJ6A62Qt_7YdIBD_qpQb-tnID4MeYS2d0110OG0sJJmBme8_rzm4.webp?r=bd6' ,
-        genre: "Drama"
-    },
-    {
-        id: 3,
-        videoName: "Our Planet",
-        rating: 9.2,
-        description: "Experience our planet's natural beauty and examine how climate change impacts all living creatures in this ambitious documentary of spectacular scope.",
-        videoLink: "https://www.youtube.com/",
-        videoImg: "https://occ-0-2086-2186.1.nflxso.net/dnm/api/v6/6gmvu2hxdfnQ55LZZjyzYR4kzGk/AAAABYXc_Em_eCLOZ1vogowGbqnOp1F4Cpyzgo1tyMDYT_J8ECOEemkdnLETjsL_c2y5nig39opJRPY7f0Uvbrva4ReeS5gs9vXgsbTJ1M8S5H7n5mmuqTDqJSSVEWfZ81CTu2fq.jpg?r=c53",
-        genre: "Educational"
-    },
-]).then(function () {
-    console.log("Data inserted")
-}).catch(function (error) {
-    console.log(error)
-});
+// Video.insertMany([
+//     {
+//         id: 1,
+//         videoName: "WWII in Color",
+//         rating: 9,
+//         description: "From the attack on Pearl Harbor to D-Day, the most pivotal events of World War II come to life in this vivid docuseries featuring colorized footage.",
+//         videoLink: "https://www.youtube.com/",
+//         videoImg: "https://occ-0-2086-2186.1.nflxso.net/dnm/api/v6/6gmvu2hxdfnQ55LZZjyzYR4kzGk/AAAABazfdM_pvsEcT_uNGB6Nw5ibtzDZ3LL6WO4ke8XGIIb2R5xqQaoPXgr8JnJbcUE1XmxQa0VMGYVYil6sliAXmBhJ3EArljuBZ6024GNmFn6DFCa2dltIqtKp_PlErLO75Lbv.jpg?r=aee",
+//         genre: "Educational"
+//     },
+//     {
+//         id: 2,
+//         videoName: "Inception",
+//         rating: 8,
+//         description: "A troubled thief who extracts secrets from people's dreams takes one last job: leading a dangerous mission to plant an idea in a target's subconscious.",
+//         videoLink: "https://www.youtube.com/",
+//         videoImg: 'https://occ-0-2086-2186.1.nflxso.net/dnm/api/v6/6gmvu2hxdfnQ55LZZjyzYR4kzGk/AAAABWhw56NkHgWP2gKN0y5pR-Q0LBcgcfPK1VQPqeuahqiZLe6ZJ6A62Qt_7YdIBD_qpQb-tnID4MeYS2d0110OG0sJJmBme8_rzm4.webp?r=bd6' ,
+//         genre: "Drama"
+//     },
+//     {
+//         id: 3,
+//         videoName: "Our Planet",
+//         rating: 9.2,
+//         description: "Experience our planet's natural beauty and examine how climate change impacts all living creatures in this ambitious documentary of spectacular scope.",
+//         videoLink: "https://www.youtube.com/",
+//         videoImg: "https://occ-0-2086-2186.1.nflxso.net/dnm/api/v6/6gmvu2hxdfnQ55LZZjyzYR4kzGk/AAAABYXc_Em_eCLOZ1vogowGbqnOp1F4Cpyzgo1tyMDYT_J8ECOEemkdnLETjsL_c2y5nig39opJRPY7f0Uvbrva4ReeS5gs9vXgsbTJ1M8S5H7n5mmuqTDqJSSVEWfZ81CTu2fq.jpg?r=c53",
+//         genre: "Educational"
+//     },
+// ]).then(function () {
+//     console.log("Data inserted")
+// }).catch(function (error) {
+//     console.log(error)
+// });
 
 /**
  * Endpoint to return the list of all the videos.
