@@ -234,6 +234,7 @@ app.get('/video/:id', (req, res) => {
           ? parseInt(parts[1], 10)
           : fileSize-1;
       const chunksize = (end-start) + 1;
+      console.log(start,end)
       const file = fs.createReadStream(path, {start, end});
       const head = {
           'Content-Range': `bytes ${start}-${end}/${fileSize}`,
