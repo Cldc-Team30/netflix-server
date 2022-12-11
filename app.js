@@ -9,28 +9,29 @@ const app = express();
 
 app.use(bodyParser.json())
 mongoose.connect(url);
-const { expressjwt: jwt  } = require('express-jwt');
+const { expressjwt: jwt } = require('express-jwt');
 const jwtAuthz = require('express-jwt-authz');
 const jwksRsa = require('jwks-rsa');
 const cors = require('cors');
-const corsOptions ={
-    origin:'https://netflick.azurewebsites.net', 
-    credentials:true,            //access-control-allow-credentials:true
-    optionSuccessStatus:200
+const { type } = require('os');
+const corsOptions = {
+    origin: 'https://netflick.azurewebsites.net',
+    credentials: true,            //access-control-allow-credentials:true
+    optionSuccessStatus: 200
 }
 app.use(cors(corsOptions));
 
 const checkJwt = jwt({
-  secret: jwksRsa.expressJwtSecret({
-    cache: true,
-    rateLimit: true,
-    jwksRequestsPerMinute: 5,
-    jwksUri: `https://dev-w7kjs2xm5elgzkn0.us.auth0.com/.well-known/jwks.json`
-  }),
+    secret: jwksRsa.expressJwtSecret({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: 5,
+        jwksUri: `https://dev-w7kjs2xm5elgzkn0.us.auth0.com/.well-known/jwks.json`
+    }),
 
-  audience: 'https://dev-w7kjs2xm5elgzkn0.us.auth0.com/api/v2/',
-  issuer: [`https://dev-w7kjs2xm5elgzkn0.us.auth0.com/`],
-  algorithms: ['RS256']
+    audience: 'https://dev-w7kjs2xm5elgzkn0.us.auth0.com/api/v2/',
+    issuer: [`https://dev-w7kjs2xm5elgzkn0.us.auth0.com/`],
+    algorithms: ['RS256']
 });
 //...
 
@@ -79,12 +80,12 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
-    minsEduStreamed: {
+    bytesEduStreamed: {
         type: Number,
         required: true,
         min: 0,
     },
-    minsDramaStreamed: {
+    bytesDramaStreamed: {
         type: Number,
         required: true,
         min: 0,
@@ -131,7 +132,7 @@ const User = mongoose.model("User", userSchema);
  * Endpoint to return the list of all the videos.
  */
 app.get("/videos", checkJwt, (req, res) => {
-    console.log(req.auth.sub) // This is the user id of the user who is signed in on the UI and making this request.
+    // console.log(req.auth.sub) // This is the user id of the user who is signed in on the UI and making this request.
     Video.find({}, (err, foundVideos) => {
         if (err) { res.send(err); }
         else {
@@ -181,24 +182,10 @@ app.get("/videos/:id", (req, res) => {
 // })
 
 /**
- * Endpoint to update the mins of educational content streamed.
- */
-app.patch("/updateMinsEduStreamed", (req, res) => {
-
-})
-
-/**
- * Endpoint to update the mins of drama content streamed.
- */
-app.patch("/updateMinsDramaStreamed", (req, res) => {
-
-})
-
-/**
  * Endpoint to verify if the user exists, if not, adding the new user in the database.
  */
 app.post("/verify", (req, res) => {
-    console.log(req.body)
+    // console.log(req.body)
     let userId = req.body.userId;
     let userEmail = req.body.userEmail;
     User.findOne({ userId: userId }, (err, foundUser) => {
@@ -222,42 +209,87 @@ app.post("/verify", (req, res) => {
     });
 })
 
-app.get('/video/:id', (req, res) => {
-  const path = `assets/goofy.mp4`;
-  const stat = fs.statSync(path);
-  const fileSize = stat.size;
-  const range = req.headers.range;
-  if (range) {
-      const parts = range.replace(/bytes=/, "").split("-");
-      const start = parseInt(parts[0], 10);
-      const end = parts[1]
-          ? parseInt(parts[1], 10)
-          : fileSize-1;
-      const chunksize = (end-start) + 1;
-      const file = fs.createReadStream(path, {start, end});
-      const head = {
-          'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-          'Accept-Ranges': 'bytes',
-          'Content-Length': chunksize,
-          'Content-Type': 'video/mp4',
-      };
-      res.writeHead(206, head);
-      file.pipe(res);
-  } else {
-      const head = {
-          'Content-Length': fileSize,
-          'Content-Type': 'video/mp4',
-      };
-      res.writeHead(200, head);
-      fs.createReadStream(path).pipe(res);
-  }
+app.get('/video/:id', checkJwt, (req, res) => {
+    const path = `assets/goofy.mp4`;
+    const stat = fs.statSync(path);
+    const fileSize = stat.size;
+    const range = req.headers.range;
+    let userId = req.auth.sub;
+    if (range) {
+        const parts = range.replace(/bytes=/, "").split("-");
+        const start = parseInt(parts[0], 10);
+        const end = parts[1]
+            ? parseInt(parts[1], 10)
+            : fileSize - 1;
+        const chunksize = (end - start) + 1;
+        const file = fs.createReadStream(path, { start, end });
+
+        //   console.log(end-start)
+        User.findOne({ userId: userId }, (err, foundUser) => {
+            if (err) {
+                res.status(403).send(err);
+            }
+            else {
+                let typeOfVideo;
+                Video.findOne({ id: req.params.id }, (err, foundVideo) => {
+                    if (err) {
+                        res.send(err);
+                    }
+                    else {
+                        if (foundVideo) {
+                            typeOfVideo = foundVideo.genre;
+                        }
+                        else {
+                            res.send("No video was found");
+                        }
+                    }
+                })
+                if (foundUser) {
+                    if (typeOfVideo === "Educational") {
+                        User.updateOne({
+                            userId: foundUser.userId
+                        }, { userEmail: foundUser.userEmail }, { bytesDramaStreamed: foundUser.bytesDramaStreamed }, {
+                            bytesEduStreamed: foundUser.bytesEduStreamed + (end - start)
+                        });
+                    }
+                    else {
+                        User.updateOne({
+                            userId: foundUser.userId
+                        }, { userEmail: foundUser.userEmail }, { bytesDramaStreamed: foundUser.bytesDramaStreamed + (end - start) }, {
+                            bytesEduStreamed: foundUser.bytesEduStreamed
+                        });
+                    }
+
+                    res.sendStatus(200);
+                }
+                else {
+                    res.sendStatus(403);
+                }
+            }
+        });
+        const head = {
+            'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+            'Accept-Ranges': 'bytes',
+            'Content-Length': chunksize,
+            'Content-Type': 'video/mp4',
+        };
+        res.writeHead(206, head);
+        file.pipe(res);
+    } else {
+        const head = {
+            'Content-Length': fileSize,
+            'Content-Type': 'video/mp4',
+        };
+        res.writeHead(200, head);
+        fs.createReadStream(path).pipe(res);
+    }
 });
 
-app.listen(process.env.PORT || 8000,()=>{
-    if(process.env.PORT!=null){
-      console.log("Server started on port "+ process.env.PORT);
+app.listen(process.env.PORT || 8000, () => {
+    if (process.env.PORT != null) {
+        console.log("Server started on port " + process.env.PORT);
     }
-    else{
-      console.log("Server started on port 8000");
+    else {
+        console.log("Server started on port 8000");
     }
 })
