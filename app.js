@@ -78,11 +78,6 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
-    userEmail: {
-        type: String,
-        required: true,
-        unique: true,
-    },
     bytesEduStreamed: {
         type: Number,
         required: true,
@@ -98,7 +93,6 @@ const userSchema = new mongoose.Schema({
 const Video = mongoose.model("Video", netflixSchema);
 const User = mongoose.model("User", userSchema);
 
-// User.create({userId:1, userEmail: "test@gmail.com", minsEduStreamed:12, minsDramaStreamed:10})
 
 // Video.insertMany([
 //     {
@@ -168,32 +162,11 @@ app.get("/videos/:id", (req, res) => {
 })
 
 /**
- * Endpoint to return payment information corresponding to the user.
- */
-// app.get("/payment", (req, res) => {
-//     let userId = req.body.userId;
-//     User.findOne({ userId: userId }, (err, foundUser) => {
-//         if (err) {
-//             res.send(err);
-//         }
-//         else {
-//             if (foundUser) {
-//                 res.send(500 + 800 * foundUser.minsDramaStreamed - 200 * foundUser.minsEduStreamed)
-//             }
-//             else {
-//                 res.sendStatus(403);
-//             }
-//         }
-//     });
-// })
-
-/**
  * Endpoint to verify if the user exists, if not, adding the new user in the database.
  */
 app.post("/verify", (req, res) => {
     // console.log(req.body)
-    let userId = req.body.userId;
-    let userEmail = req.body.userEmail;
+    let userId = req.auth.sub;
     User.findOne({ userId: userId }, (err, foundUser) => {
         if (err) {
             res.status(403).send(err);
@@ -205,9 +178,8 @@ app.post("/verify", (req, res) => {
             else {
                 User.create({
                     userId: userId,
-                    userEmail: userEmail,
-                    minsEduStreamed: 0,
-                    minsDramaStreamed: 0
+                    bytesEduStreamed: 0,
+                    bytesEduStreamed: 0
                 })
                 res.sendStatus(200);
             }
