@@ -15,7 +15,7 @@ const jwksRsa = require('jwks-rsa');
 const cors = require('cors');
 const { type } = require('os');
 const corsOptions = {
-    origin: 'https://netflick.azurewebsites.net',
+    origin: '*',
     credentials: true,            //access-control-allow-credentials:true
     optionSuccessStatus: 200
 }
@@ -74,7 +74,7 @@ const netflixSchema = new mongoose.Schema({
 
 const userSchema = new mongoose.Schema({
     userId: {
-        type: Number,
+        type: String,
         required: true,
         unique: true,
     },
@@ -164,11 +164,12 @@ app.get("/videos/:id", (req, res) => {
 /**
  * Endpoint to verify if the user exists, if not, adding the new user in the database.
  */
-app.post("/verify", (req, res) => {
+app.post("/verify", checkJwt, (req, res) => {
     // console.log(req.body)
     let userId = req.auth.sub;
     User.findOne({ userId: userId }, (err, foundUser) => {
         if (err) {
+            console.log(err)
             res.status(403).send(err);
         }
         else {
@@ -179,7 +180,7 @@ app.post("/verify", (req, res) => {
                 User.create({
                     userId: userId,
                     bytesEduStreamed: 0,
-                    bytesEduStreamed: 0
+                    bytesDramaStreamed: 0
                 })
                 res.sendStatus(200);
             }
